@@ -1,252 +1,180 @@
 package com.hms.ui;
 
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.geom.RoundRectangle2D;
+import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.stage.Stage;
 
-public class MainDashboard extends JFrame {
+public class MainDashboard extends Application {
 
-    // Modern color palette
-    private static final Color BG_MAIN = new Color(243, 244, 246);
-    private static final Color CARD_BG = Color.WHITE;
-    private static final Color TEXT_PRIMARY = new Color(17, 24, 39);
-    private static final Color TEXT_SECONDARY = new Color(107, 114, 128);
+    private static final String BG_MAIN = "#F3F4F6";
+    private static final String CARD_BG = "#FFFFFF";
+    private static final String TEXT_PRIMARY = "#111827";
+    private static final String TEXT_SECONDARY = "#6B7280";
 
-    private static final Color COLOR_ADMIN = new Color(79, 70, 229);    // Indigo
-    private static final Color COLOR_DOCTOR = new Color(13, 148, 136);  // Teal
-    private static final Color COLOR_PATIENT = new Color(234, 88, 12);  // Amber/Orange
-    private static final Color COLOR_FINANCE = new Color(16, 185, 129); // Emerald
-
-    public MainDashboard() {
-        setTitle("Hospital Management System");
-        setSize(980, 640);
-        setMinimumSize(new Dimension(880, 560));
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        getContentPane().setBackground(BG_MAIN);
-        setLayout(new BorderLayout(0, 0));
-
-        add(buildHeaderPanel(), BorderLayout.NORTH);
-        add(buildContentPanel(), BorderLayout.CENTER);
-        add(buildFooterPanel(), BorderLayout.SOUTH);
+    public static void main(String[] args) {
+        launch(args);
     }
 
-    private JPanel buildHeaderPanel() {
-        JPanel header = new JPanel(new BorderLayout());
-        header.setBackground(Color.WHITE);
-        header.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(229, 231, 235)),
-                new EmptyBorder(22, 35, 22, 35)
-        ));
+    @Override
+    public void start(Stage primaryStage) {
+        primaryStage.setTitle("Hospital Management System — Enterprise Hub");
 
-        // App Branding & Title
-        JPanel brandPanel = new JPanel(new GridLayout(2, 1, 0, 4));
-        brandPanel.setOpaque(false);
+        BorderPane root = new BorderPane();
+        root.setStyle("-fx-background-color: " + BG_MAIN + ";");
 
-        JLabel titleLabel = new JLabel("MediCare Hospital Management");
-        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        titleLabel.setForeground(TEXT_PRIMARY);
+        root.setTop(buildHeader());
+        root.setCenter(buildContent());
+        root.setBottom(buildFooter());
 
-        JLabel subTitleLabel = new JLabel("Central Operations & Department Portals");
-        subTitleLabel.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        subTitleLabel.setForeground(TEXT_SECONDARY);
+        Scene scene = new Scene(root, 980, 640);
+        primaryStage.setScene(scene);
+        primaryStage.setMinWidth(880);
+        primaryStage.setMinHeight(560);
+        primaryStage.show();
+    }
 
-        brandPanel.add(titleLabel);
-        brandPanel.add(subTitleLabel);
-        header.add(brandPanel, BorderLayout.WEST);
+    private HBox buildHeader() {
+        HBox header = new HBox();
+        header.setStyle("-fx-background-color: #FFFFFF; -fx-border-color: #E5E7EB; -fx-border-width: 0 0 1 0;");
+        header.setPadding(new Insets(20, 35, 20, 35));
+        header.setAlignment(Pos.CENTER_LEFT);
 
-        // System Status Badge
-        JPanel badgePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 8));
-        badgePanel.setOpaque(false);
+        VBox brandBox = new VBox(4);
+        Label title = new Label("MediCare Hospital Management");
+        title.setFont(Font.font("Segoe UI", FontWeight.BOLD, 22));
+        title.setTextFill(Color.web(TEXT_PRIMARY));
 
-        JLabel statusBadge = new JLabel("● Database Connected");
-        statusBadge.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 12));
-        statusBadge.setForeground(new Color(22, 163, 74));
-        statusBadge.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(187, 247, 208), 1, true),
-                new EmptyBorder(6, 14, 6, 14)
-        ));
-        badgePanel.add(statusBadge);
+        Label subTitle = new Label("Central Operations & Department Portals");
+        subTitle.setFont(Font.font("Segoe UI", 13));
+        subTitle.setTextFill(Color.web(TEXT_SECONDARY));
+        brandBox.getChildren().addAll(title, subTitle);
 
-        header.add(badgePanel, BorderLayout.EAST);
+        HBox spacer = new HBox();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        Label statusBadge = new Label("● System Online");
+        statusBadge.setStyle("-fx-text-fill: #16A34A; -fx-background-color: #DCFCE7; -fx-padding: 6 14 6 14; -fx-background-radius: 20;");
+        statusBadge.setFont(Font.font("Segoe UI", FontWeight.BOLD, 12));
+
+        header.getChildren().addAll(brandBox, spacer, statusBadge);
         return header;
     }
 
-    private JPanel buildContentPanel() {
-        JPanel contentPanel = new JPanel(new BorderLayout());
-        contentPanel.setOpaque(false);
-        contentPanel.setBorder(new EmptyBorder(30, 35, 30, 35));
+    private VBox buildContent() {
+        VBox content = new VBox(20);
+        content.setPadding(new Insets(35));
 
-        // Section Title
-        JLabel sectionLabel = new JLabel("Select Department Portal");
-        sectionLabel.setFont(new Font("Segoe UI", Font.BOLD, 17));
-        sectionLabel.setForeground(TEXT_PRIMARY);
-        sectionLabel.setBorder(new EmptyBorder(0, 0, 18, 0));
-        contentPanel.add(sectionLabel, BorderLayout.NORTH);
+        Label sectionLabel = new Label("Select Department Portal");
+        sectionLabel.setFont(Font.font("Segoe UI", FontWeight.BOLD, 18));
+        sectionLabel.setTextFill(Color.web(TEXT_PRIMARY));
 
-        // 2x2 Grid for Department Cards
-        JPanel gridPanel = new JPanel(new GridLayout(2, 2, 24, 24));
-        gridPanel.setOpaque(false);
+        GridPane grid = new GridPane();
+        grid.setHgap(24);
+        grid.setVgap(24);
 
-        gridPanel.add(createModernCard(
-                "Admin Portal",
-                "Manage user authentication, staff directories, system configuration, and audit logs.",
-                "Access Admin Controls →",
-                COLOR_ADMIN,
-                this::openAdminPortal
-        ));
+        grid.add(createModernCard("Admin Portal", "Manage user authentication, staff directories, and system configuration.", "Access Admin Controls →", "#4F46E5"), 0, 0);
+        grid.add(createModernCard("Doctor Portal", "Review appointments, clinical diagnoses, and write prescriptions.", "Enter Doctor Workspace →", "#0D9488"), 1, 0);
+        grid.add(createModernCard("Patient Portal", "Register new account, book appointments, and check medical history.", "Launch Patient Desk →", "#EA580C"), 0, 1);
+        grid.add(createModernCard("Finance & Billing", "Process treatment invoices, pharmacy billing, and daily revenue reports.", "Open Finance Desk →", "#10B981"), 1, 1);
 
-        gridPanel.add(createModernCard(
-                "Doctor Portal",
-                "Review daily appointments, record clinical diagnoses, write prescriptions, and inspect patient history.",
-                "Enter Doctor Workspace →",
-                COLOR_DOCTOR,
-                this::openDoctorPortal
-        ));
+        // Ensure columns resize evenly
+        ColumnConstraints cc = new ColumnConstraints();
+        cc.setPercentWidth(50);
+        grid.getColumnConstraints().addAll(cc, cc);
 
-        gridPanel.add(createModernCard(
-                "Patient Portal",
-                "Register new admissions, schedule OPD visits, assign wards, and manage medical records.",
-                "Launch Patient Desk →",
-                COLOR_PATIENT,
-                this::openPatientPortal
-        ));
-
-        gridPanel.add(createModernCard(
-                "Finance & Billing Portal",
-                "Process treatment invoices, insurance claims, pharmacy billing, and daily revenue reports.",
-                "Open Finance Desk →",
-                COLOR_FINANCE,
-                this::openFinancePortal
-        ));
-
-        contentPanel.add(gridPanel, BorderLayout.CENTER);
-        return contentPanel;
+        content.getChildren().addAll(sectionLabel, grid);
+        return content;
     }
 
-    private JPanel createModernCard(String title, String description, String actionText, Color accentColor, Runnable onClickAction) {
-        ModernRoundedPanel card = new ModernRoundedPanel(16, CARD_BG);
-        card.setLayout(new BorderLayout(15, 14));
-        card.setBorder(new EmptyBorder(24, 24, 20, 24));
-        card.setCursor(new Cursor(Cursor.HAND_CURSOR));
+    private VBox createModernCard(String title, String description, String actionText, String accentHex) {
+        VBox card = new VBox(12);
+        String defaultStyle = "-fx-background-color: " + CARD_BG + "; -fx-border-color: #E5E7EB; -fx-border-radius: 12; -fx-background-radius: 12; -fx-cursor: hand;";
+        String hoverStyle = "-fx-background-color: #F9FAFB; -fx-border-color: #D1D5DB; -fx-border-radius: 12; -fx-background-radius: 12; -fx-cursor: hand;";
 
-        // Header Section with accent bullet
-        JPanel topRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
-        topRow.setOpaque(false);
+        card.setStyle(defaultStyle);
+        card.setPadding(new Insets(24));
 
-        JLabel dot = new JLabel("●");
-        dot.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        dot.setForeground(accentColor);
+        Label titleLabel = new Label("● " + title);
+        titleLabel.setFont(Font.font("Segoe UI", FontWeight.BOLD, 18));
+        titleLabel.setTextFill(Color.web(TEXT_PRIMARY));
 
-        JLabel titleLabel = new JLabel(title);
-        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 18));
-        titleLabel.setForeground(TEXT_PRIMARY);
+        Label descLabel = new Label(description);
+        descLabel.setFont(Font.font("Segoe UI", 14));
+        descLabel.setTextFill(Color.web(TEXT_SECONDARY));
+        descLabel.setWrapText(true);
+        VBox.setVgrow(descLabel, Priority.ALWAYS);
 
-        topRow.add(dot);
-        topRow.add(titleLabel);
-        card.add(topRow, BorderLayout.NORTH);
+        Label actionLabel = new Label(actionText);
+        actionLabel.setFont(Font.font("Segoe UI", FontWeight.BOLD, 13));
+        actionLabel.setTextFill(Color.web(accentHex));
 
-        // Body Description
-        JLabel descLabel = new JLabel("<html><body style='width: 250px; line-height: 1.4; color: #4B5563;'>"
-                + description + "</body></html>");
-        descLabel.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        card.add(descLabel, BorderLayout.CENTER);
+        card.getChildren().addAll(titleLabel, descLabel, actionLabel);
 
-        // Action CTA
-        JLabel actionLabel = new JLabel(actionText);
-        actionLabel.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 13));
-        actionLabel.setForeground(accentColor);
-        card.add(actionLabel, BorderLayout.SOUTH);
+        // Hover effect
+        card.setOnMouseEntered(e -> card.setStyle(hoverStyle));
+        card.setOnMouseExited(e -> card.setStyle(defaultStyle));
 
-        // Hover animations
-        card.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                card.setBackground(new Color(249, 250, 251));
-                card.repaint();
-            }
+        // Click action routing
+        card.setOnMouseClicked(e -> {
+            Stage currentStage = (Stage) card.getScene().getWindow();
 
-            @Override
-            public void mouseExited(MouseEvent e) {
-                card.setBackground(CARD_BG);
-                card.repaint();
-            }
+            switch (title) {
+                case "Admin Portal":
+                    new AdminPortalView().show();
+                    break;
 
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                onClickAction.run();
+                case "Doctor Portal":
+                    DoctorAuthView docAuth = new DoctorAuthView(currentStage);
+                    docAuth.showAndWait();
+
+                    if (docAuth.isAuthenticated()) {
+                        new DoctorPortalView(docAuth.getAuthenticatedEmail()).show();
+                    }
+                    break;
+
+                case "Patient Portal":
+                    PatientAuthView authView = new PatientAuthView(currentStage);
+                    authView.showAndWait(); // Blocks until the user logs in or closes the window
+
+                    if (authView.isAuthenticated()) {
+                        // Launch the actual portal only if login was successful
+                        new PatientPortalView(authView.getAuthenticatedEmail()).show();
+                    }
+                    break;
+
+                case "Finance & Billing":
+                    BillingAuthView billAuth = new BillingAuthView(currentStage);
+                    billAuth.showAndWait();
+
+                    if (billAuth.isAuthenticated()) {
+                        // The user logged in successfully, so open the actual billing portal
+                        new BillingPortalView().show();
+                    }
+                    break;
             }
         });
 
         return card;
     }
 
-    private JPanel buildFooterPanel() {
-        JPanel footer = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 10));
-        footer.setBackground(Color.WHITE);
-        footer.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(229, 231, 235)));
+    private HBox buildFooter() {
+        HBox footer = new HBox();
+        footer.setStyle("-fx-background-color: #FFFFFF; -fx-border-color: #E5E7EB; -fx-border-width: 1 0 0 0;");
+        footer.setPadding(new Insets(12, 0, 12, 0));
+        footer.setAlignment(Pos.CENTER);
 
-        JLabel copy = new JLabel("Hospital Management System v1.0 SNAPSHOT");
-        copy.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        copy.setForeground(TEXT_SECONDARY);
-        footer.add(copy);
+        Label copy = new Label("Hospital Management System v2.0 • 3-Tier Architecture (JavaFX)");
+        copy.setFont(Font.font("Segoe UI", 12));
+        copy.setTextFill(Color.web(TEXT_SECONDARY));
 
+        footer.getChildren().add(copy);
         return footer;
-    }
-
-    // Navigation triggers
-    private void openAdminPortal() {
-        JOptionPane.showMessageDialog(this, "Navigating to Admin Portal...", "System Navigation", JOptionPane.INFORMATION_MESSAGE);
-    }
-
-    private void openDoctorPortal() {
-        JOptionPane.showMessageDialog(this, "Navigating to Doctor Portal...", "System Navigation", JOptionPane.INFORMATION_MESSAGE);
-    }
-
-    private void openPatientPortal() {
-        JOptionPane.showMessageDialog(this, "Navigating to Patient Portal...", "System Navigation", JOptionPane.INFORMATION_MESSAGE);
-    }
-
-    private void openFinancePortal() {
-        JOptionPane.showMessageDialog(this, "Navigating to Finance Portal...", "System Navigation", JOptionPane.INFORMATION_MESSAGE);
-    }
-
-    // Helper custom panel for clean rounded corners and subtle borders
-    private static class ModernRoundedPanel extends JPanel {
-        private final int radius;
-        private Color bgColor;
-
-        ModernRoundedPanel(int radius, Color bgColor) {
-            this.radius = radius;
-            this.bgColor = bgColor;
-            setOpaque(false);
-        }
-
-        @Override
-        public void setBackground(Color bg) {
-            this.bgColor = bg;
-            super.setBackground(bg);
-        }
-
-        @Override
-        protected void paintComponent(Graphics g) {
-            Graphics2D g2 = (Graphics2D) g.create();
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-            // Background fill
-            g2.setColor(bgColor != null ? bgColor : getBackground());
-            g2.fill(new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), radius, radius));
-
-            // Outer border
-            g2.setColor(new Color(229, 231, 235));
-            g2.setStroke(new BasicStroke(1.2f));
-            g2.draw(new RoundRectangle2D.Float(0, 0, getWidth() - 1, getHeight() - 1, radius, radius));
-
-            g2.dispose();
-            super.paintComponent(g);
-        }
     }
 }

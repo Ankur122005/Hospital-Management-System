@@ -1,13 +1,12 @@
 package com.hms;
 
 import com.hms.ui.MainDashboard;
-import javax.swing.SwingUtilities;
+import javafx.application.Application;
 
 public class Main {
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            MainDashboard dashboard = new MainDashboard();
-            dashboard.setVisible(true);
-        });
+        // Launches the JavaFX application lifecycle for MainDashboard.
+        // Calling it from a separate non-JavaFX main class prevents module path errors in modern Java.
+        Application.launch(MainDashboard.class, args);
     }
 }
